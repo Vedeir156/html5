@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>드래그 & 이미지 합치기</title>
+  <style>
+    body { text-align: center; margin-top: 50px; }
+    .container {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      border: 2px solid black;
+      margin: auto;
+    }
+    .draggable {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-color: orange;
+      cursor: grab;
+    }
+    #img1 {
+      top: 100px;
+      left: 100px;
+      background-color: red;
+    }
+    #img2 {
+      top: 100px;
+      left: 300px;
+      background-color: blue;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>드래그!</h1>
+  <div class="container">
+    <button id="img1" class="draggable"></button>
+    <button id="img2" class="draggable"></button>
+  </div>
+
+  <script>
+    let dragged = null;
+    let offsetX = 0, offsetY = 0;
+
+    function makeDraggable(button) {
+      button.addEventListener("mousedown", function(event) {
+        dragged = button;
+        offsetX = event.clientX - button.offsetLeft;
+        offsetY = event.clientY - button.offsetTop;
+        dragged.style.cursor = "grabbing";
+      });
+
+      document.addEventListener("mousemove", function(event) {
+        if (dragged) {
+		postionX = event.clientX - offsetX
+		if (positionX < 0) {dragged.style.left = `0px`;}
+          	else if ( positionX > container.width ) {dragged.style.left = `${container.width}px`;}
+		else {dragged.style.left = `${positionX}px`;}
+          	dragged.style.top = `${event.clientY - offsetY}px`;
+        }
+      });
+
+      document.addEventListener("mouseup", function() {
+        if (dragged) {
+          dragged.style.cursor = "grab";
+
+          let img1 = document.getElementById("img1").getBoundingClientRect();
+          let img2 = document.getElementById("img2").getBoundingClientRect();
+
+          // 충돌 감지 (두 버튼이 겹치는지 확인)
+          if (
+            img1.left < img2.right && img1.right > img2.left &&
+            img1.top < img2.bottom && img1.bottom > img2.top
+          ) {
+            mergeImages();
+          }
+
+          dragged = null;
+        }
+      });
+    }
+
+    function mergeImages() {
+      let img1 = document.getElementById("img1").getBoundingClientRect();
+      let img2 = document.getElementById("img2").getBoundingClientRect();
+      let container = document.querySelector(".container").getBoundingClientRect();
+
+      // 새로운 버튼 위치를 기존 두 버튼의 중간으로 설정
+      const img3X = (img1.left+ img2.left) / 2 - container.left;
+      const img3Y = (img1.top + img2.top) / 2 - container.top;
+
+      // 기존 버튼 숨기기
+      document.getElementById("img1").style.display = "none";
+      document.getElementById("img2").style.display = "none";
+
+      // 새로운 버튼 생성
+      let newButton = document.createElement("button");
+      newButton.id = "img3";
+      newButton.classList.add("draggable");
+      newButton.style.width = "150px";
+      newButton.style.height = "150px";
+      newButton.style.backgroundColor = "purple";
+      newButton.style.position = "absolute"; 
+      newButton.style.left = `${img3X}px`;
+      newButton.style.top = `${img3Y}px`;
+      newButton.style.cursor = "grab";
+
+      // 새로운 버튼을 .container 안에 추가
+      document.querySelector(".container").appendChild(newButton);
+
+      // 새 버튼도 드래그 가능하도록 설정
+      makeDraggable(newButton);
+    }
+
+    // 초기 버튼 드래그 가능하도록 설정
+    document.querySelectorAll(".draggable").forEach(button => {
+      makeDraggable(button);
+    });
+
+  </script>
+
+</body>
+</html>
