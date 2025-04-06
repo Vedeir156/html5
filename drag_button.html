@@ -2,15 +2,16 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>드래그 & 이미지 합치기</title>
+  <title>드래그 & 버튼 합치기</title>
   <style>
-    body { text-align: center; margin-top: 50px; }
+    body { text-align: center; margin-top: 20px; }
     .container {
       position: relative;
       width: 500px;
       height: 500px;
       border: 2px solid black;
       margin: auto;
+      overflow: hidden;
     }
     .draggable {
       position: absolute;
@@ -18,47 +19,56 @@
       height: 100px;
       background-color: orange;
       cursor: grab;
+      border: 2px solid black; /* 테두리 추가 */
+      font-size: 20px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1; /* 기본 z-index */
     }
-    #img1 {
-      top: 100px;
-      left: 100px;
-      background-color: red;
-    }
-    #img2 {
-      top: 100px;
-      left: 300px;
-      background-color: blue;
+    #createButton {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background-color: lightblue;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>드래그!</h1>
-  <div class="container">
-    <button id="img1" class="draggable"></button>
-    <button id="img2" class="draggable"></button>
-  </div>
+  <h1>드래그 & 버튼 합치기</h1>
+  <button id="createButton">버튼 생성</button>
+  <div class="container"></div>
 
   <script>
     let dragged = null;
     let offsetX = 0, offsetY = 0;
+    let zIndexCounter = 1; // 버튼을 최상단으로 만들기 위한 z-index 값
 
-    function makeDraggable(button) {
+    function addDragEvents(button) {
       button.addEventListener("mousedown", function(event) {
         dragged = button;
         offsetX = event.clientX - button.offsetLeft;
         offsetY = event.clientY - button.offsetTop;
         dragged.style.cursor = "grabbing";
+        dragged.style.zIndex = ++zIndexCounter; // 최상단으로 올림
       });
 
       document.addEventListener("mousemove", function(event) {
         if (dragged) {
-		postionX = event.clientX - offsetX
-		if (positionX < 0) {dragged.style.left = `0px`;}
-          	else if ( positionX > container.width ) {dragged.style.left = `${container.width}px`;}
-		else {dragged.style.left = `${positionX}px`;}
-          	dragged.style.top = `${event.clientY - offsetY}px`;
+          let container = document.querySelector(".container");
+          let maxX = container.clientWidth - dragged.clientWidth;
+          let maxY = container.clientHeight - dragged.clientHeight;
+
+          let newX = Math.max(0, Math.min(event.clientX - offsetX, maxX));
+          let newY = Math.max(0, Math.min(event.clientY - offsetY, maxY));
+
+          dragged.style.left = `${newX}px`;
+          dragged.style.top = `${newY}px`;
         }
       });
 
@@ -66,59 +76,108 @@
         if (dragged) {
           dragged.style.cursor = "grab";
 
-          let img1 = document.getElementById("img1").getBoundingClientRect();
-          let img2 = document.getElementById("img2").getBoundingClientRect();
-
-          // 충돌 감지 (두 버튼이 겹치는지 확인)
-          if (
-            img1.left < img2.right && img1.right > img2.left &&
-            img1.top < img2.bottom && img1.bottom > img2.top
-          ) {
-            mergeImages();
-          }
+          document.querySelectorAll(".draggable").forEach(btn => {
+            if (btn !== dragged && checkCollision(dragged, btn)) {
+              if (dragged.clientWidth === btn.clientWidth && dragged.clientHeight === btn.clientHeight) {
+                mergeImages(dragged, btn);
+              }
+            }
+          });
 
           dragged = null;
         }
       });
+
+      button.addEventListener("click", function() {
+        button.style.zIndex = ++zIndexCounter; // 클릭 시에도 최상단으로 이동
+      });
     }
 
-    function mergeImages() {
-      let img1 = document.getElementById("img1").getBoundingClientRect();
-      let img2 = document.getElementById("img2").getBoundingClientRect();
-      let container = document.querySelector(".container").getBoundingClientRect();
+    function checkCollision(btn1, btn2) {
+      let rect1 = btn1.getBoundingClientRect();
+      let rect2 = btn2.getBoundingClientRect();
 
-      // 새로운 버튼 위치를 기존 두 버튼의 중간으로 설정
-      const img3X = (img1.left+ img2.left) / 2 - container.left;
-      const img3Y = (img1.top + img2.top) / 2 - container.top;
+      return (
+        rect1.left < rect2.right &&
+        rect1.right > rect2.left &&
+        rect1.top < rect2.bottom &&
+        rect1.bottom > rect2.top
+      );
+    }
 
-      // 기존 버튼 숨기기
-      document.getElementById("img1").style.display = "none";
-      document.getElementById("img2").style.display = "none";
+    function mergeImages(btn1, btn2) {
+      let container = document.querySelector(".container");
 
-      // 새로운 버튼 생성
+      let newX = (btn1.offsetLeft + btn2.offsetLeft) / 2;
+      let newY = (btn1.offsetTop + btn2.offsetTop) / 2;
+      let newSize = btn1.clientWidth + 20; // 새 버튼 크기 증가
+
+      let blockCount1 = parseInt(btn1.innerText) || 1;
+      let blockCount2 = parseInt(btn2.innerText) || 1;
+      let newBlockCount = blockCount1 + blockCount2; // 합쳐진 블록 개수 계산
+
       let newButton = document.createElement("button");
-      newButton.id = "img3";
       newButton.classList.add("draggable");
-      newButton.style.width = "150px";
-      newButton.style.height = "150px";
-      newButton.style.backgroundColor = "purple";
-      newButton.style.position = "absolute"; 
-      newButton.style.left = `${img3X}px`;
-      newButton.style.top = `${img3Y}px`;
-      newButton.style.cursor = "grab";
+      newButton.style.width = `${newSize}px`;
+      newButton.style.height = `${newSize}px`;
+      newButton.style.left = `${newX}px`;
+      newButton.style.top = `${newY}px`;
+      newButton.style.backgroundColor = "green";
+      newButton.style.border = "2px solid black"; // 테두리 추가
+      newButton.innerText = newBlockCount; // 중앙에 블록 개수 표시
+      newButton.style.zIndex = ++zIndexCounter; // 새 버튼도 최상단
 
-      // 새로운 버튼을 .container 안에 추가
-      document.querySelector(".container").appendChild(newButton);
+      container.removeChild(btn1);
+      container.removeChild(btn2);
+      container.appendChild(newButton);
 
-      // 새 버튼도 드래그 가능하도록 설정
-      makeDraggable(newButton);
+      addDragEvents(newButton);
     }
 
-    // 초기 버튼 드래그 가능하도록 설정
-    document.querySelectorAll(".draggable").forEach(button => {
-      makeDraggable(button);
-    });
+    function generateRandomPosition(size) {
+      let container = document.querySelector(".container");
+      let maxX = container.clientWidth - size;
+      let maxY = container.clientHeight - size;
 
+      let newX, newY;
+      let overlap;
+      do {
+        overlap = false;
+        newX = Math.floor(Math.random() * maxX);
+        newY = Math.floor(Math.random() * maxY);
+
+        document.querySelectorAll(".draggable").forEach(btn => {
+          let rect = btn.getBoundingClientRect();
+          if (
+            newX < rect.right && (newX + size) > rect.left &&
+            newY < rect.bottom && (newY + size) > rect.top
+          ) {
+            overlap = true;
+          }
+        });
+      } while (overlap);
+
+      return { newX, newY };
+    }
+
+    document.getElementById("createButton").addEventListener("click", function() {
+      let container = document.querySelector(".container");
+      let { newX, newY } = generateRandomPosition(100);
+
+      let newButton = document.createElement("button");
+      newButton.classList.add("draggable");
+      newButton.style.width = "100px";
+      newButton.style.height = "100px";
+      newButton.style.left = `${newX}px`;
+      newButton.style.top = `${newY}px`;
+      newButton.style.backgroundColor = "red";
+      newButton.style.border = "2px solid black"; // 테두리 추가
+      newButton.innerText = "1"; // 기본 블록 개수 1
+      newButton.style.zIndex = ++zIndexCounter; // 새 버튼도 최상단
+
+      container.appendChild(newButton);
+      addDragEvents(newButton);
+    });
   </script>
 
 </body>
