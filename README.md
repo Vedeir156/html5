@@ -8,7 +8,9 @@
     <h1>About Self-study Html</h1>
     <hr>
     <ul>
-        <a href src = https://vedeir156.github.io/html5/drag_button.html>Try Drag_button</a>
+        <li>
+            <a href https://vedeir156.github.io/html5/drag_button.html> Try Drag_button </a>
+        </li>
     </ul>
         
 </body>
