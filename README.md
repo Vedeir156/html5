@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+a {
+  color: inherit;
+}
 </head>
 <body>
     <h1>Self-study Html Log</h1>
