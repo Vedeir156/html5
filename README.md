@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <h1>About Self-study Html</h1>
+    <h1>Self-study Html Log</h1>
     <hr>
     <ul>
         <li>
