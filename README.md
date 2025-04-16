@@ -7,14 +7,14 @@
 <body>
     <h1>Self-study Html Log</h1>
     <hr>
-    <ul>
+    <ol>
         <li>
             <a href = "https://vedeir156.github.io/html5/drag_button.html" target="_blank">  1. Try Drag_button </a>
         </li>
         <li>
             <a href = "https://vedeir156.github.io/html5/ssu-lms.html" target="_blank"> 2. Try SSU LMS </a>
         </li>
-    </ul>
+    </ol>
         
 </body>
 </html>
