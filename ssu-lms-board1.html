@@ -1,25 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>숭실대학교 게시판</title>
-    <style>
-        @import url(CSS/menu.css);
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>숭실대학교 게시판</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    @import url(CSS/menu.css);
+    @import url(CSS/bottom-box.css);
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial;
+      background-color: #ffffff;
+    }
+
+    .title-text {
+      display: flex;
+      transform: translateX(50%);
+      font-size: 2rem;
+      margin-top: 60px;
+      margin-bottom: 60px;
+      font-weight: bold;
+      z-index: 950;
+    }
+
+    .content-box {
+      margin: 0 auto;
+      margin-top: 12vh;
+      width: 60vw;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+      justify-content: space-between;
+    }
+
+    .search-left {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .search-container input {
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    .search-container button {
+      padding: 8px 12px;
+      background-color: #1f56a9;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .search-container button:hover {
+      background-color: #144287;
+    }
+
+    .notice-write-btn {
+      padding: 12px;
+      background-color: transparent;
+      color: white;
+      border: none;
+      border: 1px black solid;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .notice-write-btn:hover {
+      background-color: gray;
+    }
+
+    #noticeTable {
+      width: 100%;
+      border: 1px solid gray;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    #pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 6px;
+    }
+
+    #pagination button {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+      cursor: pointer;
+    }
+
+    #pagination button:hover {
+      background-color: #ddd;
+    }
+
+    #current-time {
+      position: relative;
+      text-align: right;
+      margin-right: 13vw;
+      font-size: 13px;
+      color: gray;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 
 <body>
   <div class="menu-bar">
     <div class="menu-bar-left">
       <a href="ssu-lms.html" target="_self">
-        <img src="media/ssu_logo.png" alt="ssu-logo" >
+        <img src="media/ssu_logo.png" alt="ssu-logo">
       </a>
     </div>
     <div class="menu-bar-right">
-      <div class="menu-bar-box">예약/대여</div> <div class="vertical-line"></div>
-      <div class="menu-bar-box">비정규과정</div> <div class="vertical-line"></div>
-      <div class="menu-bar-box">공개강좌</div> <div class="vertical-line"></div>
+      <div class="menu-bar-box">예약/대여</div>
+      <div class="vertical-line"></div>
+      <div class="menu-bar-box">비정규과정</div>
+      <div class="vertical-line"></div>
+      <div class="menu-bar-box">공개강좌</div>
+      <div class="vertical-line"></div>
       <div class="menu-bar-box">문의사항</div>
     </div>
   </div>
@@ -54,9 +164,135 @@
       </table>
     </div>
   </div>
-  <h1 style="position: absolute; top: 15vh; left: 50%; transform: translateX(-50%); font-weight: bold; z-index: 1000;">
-    교수자 공지사항
-  </h1>
-  
+
+  <div class="content-box">
+    <div style="text-align: center; padding-top: 50px; padding-bottom: 30px; font-size: 2.5rem; font-weight: bold;">교수자 공지사항</div>
+    <hr style="border: 1px #EEEEEE solid;">
+
+    <div class="search-container">
+      <div class="search-left">
+        <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+        <button onclick="filterTable()" style="padding: 12px;"><i class="fas fa-search"></i></button>
+      </div>
+      <button onclick="clearLocalStorage()">Clear</button>
+      <button onclick="location.href='ssu-write-notice.html'" class="notice-write-btn">공지사항 작성</button>
+    </div>
+
+    <table id="noticeTable">
+      <thead style="border-top: 2px solid black;">
+        <tr style="height: 50px; background-color: #bbbbbb;">
+          <th style="width: 10%;">번호</th>
+          <th style="width: 40%;">제목</th>
+          <th style="width: 30%;">첨부</th>
+          <th style="width: 10%;">등록일</th>
+          <th style="width: 10%;">조회수</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div id="pagination"></div>
+  </div>
+
+  <div id="current-time"></div>
+
+  <div class="bottom-container-1" style="position: static; margin-top: 100px;">
+    개인정보처리방침
+  </div>
+  <div class="bottom-container-2">
+    <img src="media/ssu-main_logo_black.png" height="100px">
+    서울시 동작구 상도로 369 숭실대학교<br>COPYRIGHT© 2021 SOONGSIL UNIVERSITY.
+    <div class="bottom-container-2-list">:: 관련사이트
+      <div class="bottom-container-2-list-context">
+        컨텐츠관리시스템<br>
+        u-SAINT<br>
+        중앙도서관<br>
+        SSU-PATH<br>
+        진로취업센터<br>
+        창업지원단<br>
+        캠퍼스맵
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const getNoticesFromStorage = () => {
+      const stored = localStorage.getItem('notices');
+      return stored ? JSON.parse(stored) : [];
+    };
+
+    const tableBody = document.getElementById('table-body');
+    const rowsPerPage = 20;
+    let currentPage = 1;
+
+    const tableData = getNoticesFromStorage();
+
+    function renderTablePage(page) {
+      tableBody.innerHTML = '';
+      const start = (page - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+      const pageData = tableData.slice(start, end);
+
+      pageData.forEach(data => {
+        const row = document.createElement('tr');
+        row.style.height = '45px';
+        row.style.borderTop = '1px gray solid';
+        row.style.borderBottom = '1px gray solid';
+        row.style.fontSize = '15px';
+
+        const columns = ['번호', '제목', '첨부', '등록일', '조회수'];
+        columns.forEach(col => {
+          const td = document.createElement('td');
+          td.textContent = data[col];
+          row.appendChild(td);
+        });
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    function renderPagination() {
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+      const pageCount = Math.ceil(tableData.length / rowsPerPage);
+
+      for (let i = 1; i <= pageCount; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.onclick = () => {
+          currentPage = i;
+          renderTablePage(i);
+          renderPagination();
+        };
+        if (i === currentPage) {
+          btn.style.backgroundColor = '#1f56a9';
+          btn.style.color = 'white';
+          btn.style.fontWeight = 'bold';
+        }
+        pagination.appendChild(btn);
+      }
+    }
+
+    function filterTable() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#noticeTable tbody tr");
+
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+      });
+    }
+
+    function clearLocalStorage() {
+      if (confirm("정말로 초기화하시겠습니까?")) {
+        localStorage.removeItem('notices');
+        alert("공지사항이 초기화되었습니다.");
+        location.reload(); // Reload the page to reflect the changes
+      }
+    }
+
+    renderTablePage(currentPage);
+    renderPagination();
+  </script>
 </body>
+
 </html>
