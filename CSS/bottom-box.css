@@ -1,0 +1,69 @@
+.bottom-container-1 {
+    background-color: #2E2E2E;
+    color: yellow;
+    position: absolute;
+    width: 100%;
+    height: 70px;
+    padding-left: 13vw;
+    box-sizing: border-box;
+    display: flex;
+    border-bottom: 1px solid #888888;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.bottom-container-2 {
+    position: relative;
+    background-color: #2E2E2E;
+    color: #888888;
+    width: 100%;
+    height: 130px;
+    padding-left: 13vw;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 14px;
+    line-height: 2.0;
+}
+
+.bottom-container-2-list {
+    position: absolute;
+    background-color: #888888;
+    color: #ffffff;
+    right: 13vw;
+    width: 12vw;
+    height: 30%;
+    padding-left: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.bottom-container-2-list-context {
+    position: absolute;
+    background-color: #666666;
+    color: #ffffff;
+    bottom: 100%;
+    left: 0%;
+    width: 12vw;
+    height: 0px;
+    overflow: hidden;
+    padding-left: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.bottom-container-2-list:hover {
+    background-color: yellowgreen;
+}
+
+.bottom-container-2-list:hover .bottom-container-2-list-context,
+.bottom-container-2-list-context:hover {
+    height: 210px;
+}

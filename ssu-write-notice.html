@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공지사항 작성</title>
+  <style>
+    /* Styling for the form */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 40px;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-container h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .form-group textarea {
+      resize: vertical;
+      height: 150px;
+    }
+    .form-actions {
+      text-align: right;
+    }
+    .form-actions button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #1f56a9;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .form-actions button:hover {
+      background-color: #144287;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>공지사항 작성</h2>
+    <form id="noticeForm">
+      <div class="form-group">
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="attachment">첨부파일</label>
+        <input type="file" id="attachment" name="attachment">
+      </div>
+
+      <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" name="content" required></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">등록</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("noticeForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+      const attachment = document.getElementById("attachment").files.length > 0 ? '\u{1F4CE}' : ''; // A paperclip emoji for the attachment
+      const date = new Date();
+      const formattedDate = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+
+      const newNotice = {
+        제목: title,
+        첨부: attachment,
+        등록일: formattedDate,
+        내용: content,  // Store the content too
+        조회수: 0
+      };
+
+      const notices = JSON.parse(localStorage.getItem("notices")) || [];
+      const next번호 = notices.length > 0 ? notices[0].번호 + 1 : 1;
+
+      newNotice.번호 = next번호;
+
+      notices.unshift(newNotice);
+
+      localStorage.setItem("notices", JSON.stringify(notices));
+
+      window.location.href = "ssu-lms-board1.html";
+    });
+  </script>
+</body>
+</html>

@@ -7,6 +7,7 @@
   
   <style>
     @import url(CSS/menu.css);
+    @import url(CSS/bottom-box.css);
 
     body {
       margin: 0;
@@ -139,72 +140,6 @@
       list-style-type: none;
       line-height: 1.0;
     }
-
-    .bottom-container-1{
-      background-color: #2E2E2E;
-      color: yellow;
-      position: absolute;
-      top: 100vh;
-      width: 100%;
-      height: 70px;
-      padding-left: 13vw;
-      box-sizing: border-box;
-      display: flex;
-      border-bottom: 1px solid #888888;
-      align-items: center;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .bottom-container-2{
-      position: relative;
-      background-color: #2E2E2E;
-      color: #888888;
-      top: calc(100vh + 70px);
-      width: 100%;
-      height: 130px;
-      padding-left: 13vw;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      font-size: 14px;
-      line-height: 2.0;
-    }
-    .bottom-container-2-list{
-      position: absolute;
-      background-color: #888888;
-      color: #ffffff;
-      right: 13vw;
-      width: 12vw;
-      height: 30%;
-      padding-left: 10px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-    }
-    .bottom-container-2-list-context{
-      position: absolute;
-      background-color: #666666;
-      color: #ffffff;
-      bottom: 100%;
-      left: 0%;
-      width: 12vw;
-      height: 0px;
-      overflow: hidden;
-      padding-left: 10px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      white-space: nowrap;
-    }
-    .bottom-container-2-list:hover{
-      background-color: yellowgreen;
-    }
-    .bottom-container-2-list:hover .bottom-container-2-list-context , .bottom-container-2-list-context:hover{
-      height: 210px;
-    }
   </style>
 
   <script>
@@ -311,7 +246,7 @@
   </div>
 
   <div class="notice-box" style="left: 13vw;">
-    <h2>교수자 공지사항</h2>
+    <h2><span style="color:#002255;">교수자</span> 공지사항</h2>
     <a href="ssu-lms-board1.html">
       <div class="notice-box-plus">+</div>
     </a>
@@ -323,7 +258,7 @@
     </ul>
   </div>
   <div class="notice-box" style="left: 50vw;">
-    <h2>학습자 공지사항</h2>
+    <h2><span style="color:#002255;">학습자</span> 공지사항</h2>
     <a href="ssu-lms-board2.html">
       <div class="notice-box-plus">+</div>
     </a>
@@ -334,10 +269,10 @@
       <li>4</li>
     </ul>
   </div>
-  <div class="bottom-container-1">
+  <div class="bottom-container-1" style="top: 100vh;">
     개인정보처리방침
   </div>
-  <div class="bottom-container-2">
+  <div class="bottom-container-2" style="top: calc(100vh + 70px);">
     <img src="media/ssu-main_logo_black.png" height="100px">
     서울시 동작구 상도로 369 숭실대학교<br>COPYRIGHT© 2021 SOONGSIL UNIVERSITY.
     <div class="bottom-container-2-list">:: 관련사이트
