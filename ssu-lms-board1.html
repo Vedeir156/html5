@@ -85,6 +85,26 @@
       border: 1px solid gray;
       border-collapse: collapse;
       text-align: center;
+      table-layout: fixed;
+    }
+
+    #noticeTable tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    #noticeTable tbody td {
+      height: 45px;
+      border-top: 1px gray solid;
+      border-bottom: 1px gray solid;
+      font-size: 13px;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #noticeTable tbody td:nth-child(2) {
+      text-align: left;
     }
 
     #pagination {
@@ -103,15 +123,6 @@
 
     #pagination button:hover {
       background-color: #ddd;
-    }
-
-    #current-time {
-      position: relative;
-      text-align: right;
-      margin-right: 13vw;
-      font-size: 13px;
-      color: gray;
-      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -166,7 +177,8 @@
   </div>
 
   <div class="content-box">
-    <div style="text-align: center; padding-top: 50px; padding-bottom: 30px; font-size: 2.5rem; font-weight: bold;">교수자 공지사항</div>
+    <div style="text-align: center; padding-top: 50px; padding-bottom: 30px; font-size: 2.5rem; font-weight: bold;">교수자
+      공지사항</div>
     <hr style="border: 1px #EEEEEE solid;">
 
     <div class="search-container">
@@ -193,8 +205,6 @@
     <div id="pagination"></div>
   </div>
 
-  <div id="current-time"></div>
-
   <div class="bottom-container-1" style="position: static; margin-top: 100px;">
     개인정보처리방침
   </div>
@@ -215,41 +225,42 @@
   </div>
 
   <script>
-    const getNoticesFromStorage = () => {
-      const stored = localStorage.getItem('notices');
-      return stored ? JSON.parse(stored) : [];
-    };
-
-    const tableBody = document.getElementById('table-body');
-    const rowsPerPage = 20;
+    let tableData = [];
     let currentPage = 1;
+    const rowsPerPage = 20;
 
-    const tableData = getNoticesFromStorage();
+    fetch('Notice-File/notice-1.json')
+      .then(response => response.json())
+      .then(data => {
+        tableData = data;
+        renderTablePage(currentPage);
+        renderPagination();
+      });
 
     function renderTablePage(page) {
+      const tableBody = document.getElementById('table-body');
       tableBody.innerHTML = '';
+
       const start = (page - 1) * rowsPerPage;
       const end = start + rowsPerPage;
       const pageData = tableData.slice(start, end);
 
-      pageData.forEach(data => {
+      pageData.forEach(notice => {
         const row = document.createElement('tr');
-        row.style.height = '45px';
-        row.style.borderTop = '1px gray solid';
-        row.style.borderBottom = '1px gray solid';
-        row.style.fontSize = '15px';
 
-        const columns = ['번호', '제목', '첨부', '등록일', '조회수'];
-        columns.forEach(col => {
-          const td = document.createElement('td');
-          td.textContent = data[col];
-          row.appendChild(td);
-        });
+        const title = notice.제목 || '-';
+        const date = notice.등록일 || '-';
+        const views = notice.조회수 ?? '-';
+        const number = notice.번호 ?? '-';
+        const attach = notice.첨부 ?? "";
+
+        row.innerHTML = `<td>${number}</td> <td>${title}</td> <td>${attach}</td> <td>${date}</td> <td>${views}</td>`;
 
         tableBody.appendChild(row);
       });
     }
 
+    // Function to render pagination buttons
     function renderPagination() {
       const pagination = document.getElementById('pagination');
       pagination.innerHTML = '';
@@ -272,6 +283,7 @@
       }
     }
 
+    // Search filter function
     function filterTable() {
       const input = document.getElementById("searchInput").value.toLowerCase();
       const rows = document.querySelectorAll("#noticeTable tbody tr");
@@ -282,17 +294,8 @@
       });
     }
 
-    function clearLocalStorage() {
-      if (confirm("정말로 초기화하시겠습니까?")) {
-        localStorage.removeItem('notices');
-        alert("공지사항이 초기화되었습니다.");
-        location.reload(); // Reload the page to reflect the changes
-      }
-    }
-
-    renderTablePage(currentPage);
-    renderPagination();
   </script>
+
 </body>
 
 </html>
